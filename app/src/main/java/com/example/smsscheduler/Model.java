@@ -1,12 +1,12 @@
 package com.example.smsscheduler;
 
-public class model {
+public class Model {
 
     String number;
     String msg;
     long  time;
 
-    public model() {
+    public Model() {
     }
 
     public long getTime() {

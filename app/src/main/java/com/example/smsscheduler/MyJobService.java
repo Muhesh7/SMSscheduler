@@ -8,31 +8,19 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
 public class MyJobService extends JobService {
     boolean jobCancel=false;
     Data mData;
-    ArrayList<model> models;
+    ArrayList<Model> models;
     @Override
     public boolean onStartJob(final JobParameters params) {
         mData=new Data(this);
         models=mData.Load();
-        final long time=models.get(params.getJobId()-1).getTime();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    for(long i=0;i<time;++i)
-                    {
-                        try {
-                            Thread.sleep(1);
-                            Log.d("ddd", Long.toString(i));
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
                     sendsms(params);
-
                 }
             }).start();
 

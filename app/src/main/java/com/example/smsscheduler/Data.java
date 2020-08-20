@@ -11,14 +11,13 @@ import java.util.ArrayList;
 
 public class Data {
     SharedPreferences mSharedPref;
-    ArrayList<model> mModels;
-    int money=20000;
+    ArrayList<Model> mModels;
 
     public Data(Context context) {
         mSharedPref=context.getSharedPreferences("MyHeros",Context.MODE_PRIVATE);
     }
 
-    public void Save(ArrayList<model> superHeroes)
+    public void Save(ArrayList<Model> superHeroes)
     {
         this.mModels =superHeroes;
         SharedPreferences.Editor editor = mSharedPref.edit();
@@ -28,10 +27,10 @@ public class Data {
         editor.apply();
     }
 
-    public  ArrayList<model> Load()
+    public  ArrayList<Model> Load()
     {    Gson gson =new Gson();
         String mine =mSharedPref.getString("MyHeroes",null);
-        Type type = new TypeToken<ArrayList<model>>() {}.getType();
+        Type type = new TypeToken<ArrayList<Model>>() {}.getType();
         mModels =gson.fromJson(mine,type);
         if(mModels ==null)
         {

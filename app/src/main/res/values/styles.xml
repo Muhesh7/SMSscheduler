@@ -7,7 +7,8 @@
         <item name="android:textColor">#A9D81C</item>
         <item name="colorPrimaryDark">#1E1E1E</item>
         <item name="titleTextColor">#99C31B</item>
-        <item name="colorAccent">#E040FB</item>
+        <item name="editTextColor">@android:color/holo_green_dark</item>
+        <item name="colorAccent">@android:color/holo_orange_light</item>
     </style>
 
 </resources>
