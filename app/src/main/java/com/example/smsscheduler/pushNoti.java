@@ -33,12 +33,13 @@ public class pushNoti {
     }
     public void pushNotification(String s)
     { createNotificationChannel();
+
         Bitmap bitmap= BitmapFactory.decodeResource(mContext.getResources(),R.drawable.sms);
         bitmap=Bitmap.createScaledBitmap(bitmap,50,50,false);
         Notification notification=new NotificationCompat.Builder(mContext,"BOSS")
                 .setSmallIcon(R.drawable.sms)
                 .setLargeIcon(bitmap)
-                .setContentText("message sent to \n"+s)
+                .setContentText("Message sent to \n"+s)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .build();
         NotificationManagerCompat.from(mContext).notify(notId,notification);
@@ -48,7 +49,7 @@ public class pushNoti {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)
         {
             String name= "SMS";
-            String desc="message received";
+            String desc="Message received";
             int importance= NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel  channel=new NotificationChannel(HeroID,name,importance);
             channel.setDescription(desc);

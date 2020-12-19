@@ -8,7 +8,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -29,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 public class MessageFragment extends Fragment {
@@ -44,17 +48,15 @@ public class MessageFragment extends Fragment {
     FragmentMessageBinding mBinding;
 
     private String ScheduledDate,ScheduledTime,CurrentDate;
-    private ArrayList<Model> mModels;
+    private ArrayList<Model> mModels=new ArrayList<>();
     private Data mData;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
          mBinding=FragmentMessageBinding.inflate(inflater,container,false);
 
-        mData=new Data(getActivity());
-        mModels=mData.Load();
-        JobScheduler scheduler=(JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        scheduler.cancel(mModels.size()-1);
+        //mData=new Data(getActivity());
+        //mModels=mData.Load();
         mBinding.datebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +82,7 @@ public class MessageFragment extends Fragment {
         mBinding.timebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar calendar=Calendar.getInstance();
+                final Calendar calendar=Calendar.getInstance();
                 int hour=calendar.get(Calendar.HOUR);
                 int minute=calendar.get(Calendar.MINUTE);
 
@@ -90,9 +92,11 @@ public class MessageFragment extends Fragment {
                         Calendar calendar1=Calendar.getInstance();
                         calendar1.set(Calendar.HOUR,hourOfDay);
                         calendar1.set(Calendar.MINUTE,minute);
-                        CharSequence charSequence= DateFormat.format("hh:mm a",calendar1);
+                        calendar1.set(Calendar.SECOND,00);
+                        CharSequence charSequence= DateFormat.format("hh:mm:ss a",calendar1);
                         ScheduledTime=charSequence.toString();
-                        mBinding.timetext.setText(charSequence);
+                        CharSequence charSequence2= DateFormat.format("hh:mm a",calendar1);
+                        mBinding.timetext.setText(charSequence2);
                     }
                 },hour,minute,false);
                 timePickerDialog.show();
@@ -109,13 +113,25 @@ public class MessageFragment extends Fragment {
         });
         return mBinding.getRoot();
     }
+viewModel mViewModel;
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel= ViewModelProviders.of(getActivity()).get(viewModel.class);
+       mViewModel.getAll().observe(getViewLifecycleOwner(), new Observer<List<Model>>() {
+            @Override
+            public void onChanged(List<Model> models) {
+                mModels= (ArrayList<Model>) models;
+            }
+        });
+    }
 
-public void permissionResult(boolean isYes){
+    public void permissionResult(boolean isYes){
     if(isYes)
     {  String number=mBinding.num.getText().toString();
        String mesg=mBinding.msg.getText().toString();
 
-        String format = "MM/dd/yyyy hh:mm a";
+        String format = "MM/dd/yyyy hh:mm:ss a";
         SimpleDateFormat sdf = new SimpleDateFormat(format);
 
         Calendar calendar=Calendar.getInstance();
@@ -130,7 +146,7 @@ public void permissionResult(boolean isYes){
         calendar1.set(Calendar.YEAR,year);
         calendar1.set(Calendar.MONTH,month);
         calendar1.set(Calendar.DATE,day);
-        CharSequence charSequence= DateFormat.format("MM/dd/yyyy hh:mm a",calendar1);
+        CharSequence charSequence= DateFormat.format("MM/dd/yyyy hh:mm:ss a",calendar1);
         CurrentDate=charSequence.toString();
         Date date1= null;
         Date date2=null;
@@ -142,14 +158,19 @@ public void permissionResult(boolean isYes){
         }
 
         long del=date2.getTime()-date1.getTime();
+        Log.d("ddd",Long.toString(del));
+
         Model model=new Model();
         model.setNumber(number);
         model.setMsg(mesg);
         model.setTime(del);
-        mModels.add(model);
-        mData.Save(mModels);
+        model.setStatus("pending");
+        model.setTimestring(ScheduledDate+" "+ScheduledTime);
+        model.setKey(mModels.size());
+        //mModels.add(model);
+       // mData.Save(mModels);
+        mViewModel.insert(model);
         int id=mModels.size();
-        Log.d("ddd",Long.toString(del));
         if(del>0) {
             ComponentName serviceComponent = new ComponentName(getContext(), MyJobService.class);
 
@@ -164,6 +185,7 @@ public void permissionResult(boolean isYes){
             int res = scheduler.schedule(jobInfo);
             if (res == JobScheduler.RESULT_SUCCESS) {
                 Toast.makeText(getContext(), "SMS Scheduled Success", Toast.LENGTH_SHORT).show();
+                reset();
             } else {
                 Toast.makeText(getContext(), "SMS Scheduled Failed", Toast.LENGTH_SHORT).show();
             }
@@ -178,12 +200,19 @@ public void permissionResult(boolean isYes){
     { if(mBinding.msg.getText().toString().isEmpty()|mBinding.num.getText().toString().isEmpty()
             |mBinding.datetext.getText().toString().equals("00/00/00")|mBinding.datebutton.getText().toString().equals("00:00"))
     {
-        Toast.makeText(getContext(),"Properly fill the details",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),"fill all the details",Toast.LENGTH_SHORT).show();
         return false;
     }else {
 
         return true;
     }
 
+    }
+    private void reset()
+    {
+        mBinding.msg.setText("");
+        mBinding.datetext.setText("00/00/00");
+        mBinding.timetext.setText("00:00");
+        mBinding.num.setText("");
     }
 }

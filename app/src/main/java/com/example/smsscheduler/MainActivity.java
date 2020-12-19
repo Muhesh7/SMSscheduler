@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 FrameLayout mFrameLayout;
-Fragment mFragment;
+Fragment mFragment,mFragment2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +24,7 @@ Fragment mFragment;
         mFrameLayout=findViewById(R.id.fragment);
         mFragment=new MessageFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment,mFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.bottomsheet,new List()).commit();
     }
 
     public void checkPermission()
@@ -32,7 +33,6 @@ Fragment mFragment;
         == PackageManager.PERMISSION_GRANTED)
         {
           notifyFragment(true);
-
         }
         else {
             if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS))

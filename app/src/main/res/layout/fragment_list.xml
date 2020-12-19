@@ -3,8 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/name"
     tools:context=".List">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="History"
+        android:background="@drawable/name"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:id="@+id/text"/>
+<androidx.recyclerview.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:id="@+id/recyclerview"
+    android:layout_below="@+id/text"
+    android:layout_height="match_parent"/>
 
 
 </RelativeLayout>

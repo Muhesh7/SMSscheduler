@@ -7,16 +7,10 @@ import android.content.Intent;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import java.util.ArrayList;
-
 public class MyJobService extends JobService {
     boolean jobCancel=false;
-    Data mData;
-    ArrayList<Model> models;
     @Override
     public boolean onStartJob(final JobParameters params) {
-        mData=new Data(this);
-        models=mData.Load();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -33,14 +27,29 @@ public class MyJobService extends JobService {
         return true;
     }
     public void sendsms(JobParameters params) {
-
-        Intent intent = new Intent(this,MyJobService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(models.get(params.getJobId()-1).getNumber(), null, models.get(params.getJobId()-1).getMsg(), pendingIntent, null);
-        Log.d("ddd", Integer.toString(params.getJobId()));
-        pushNoti.push(this).pushNotification(models.get(params.getJobId()-1).getNumber());
-        jobFinished(params,false);
+        Repo repo=new Repo(getApplication());
+        Model model=repo.getModel(params.getJobId());
+        if(model!=null) {
+            Model model1 = new Model();
+            model1.setKey(model.getKey());
+            model1.setNumber(model.getNumber());
+            model1.setMsg(model.getMsg());
+            model1.setTime(model.getTime());
+            model1.setStatus("Sent");
+            model1.setTimestring(model.getTimestring());
+            Intent intent = new Intent(this, MyJobService.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(model.getNumber(), null, model.getMsg(), pendingIntent, null);
+            Log.d("ddd", Integer.toString(params.getJobId()));
+            repo.update(model1);
+            pushNoti.push(this).pushNotification(model.getNumber());
+            jobFinished(params, false);
+        }
+        else
+        {pushNoti.push(this).pushNotification("Couldn't complete Action");
+            jobFinished(params,true);
+        }
 
     }
 }

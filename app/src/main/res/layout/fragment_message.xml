@@ -17,8 +17,9 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:text="   To"
-            android:layout_marginTop="25dp"
+            android:text="To"
+            android:paddingStart="15dp"
+            android:padding="5dp"
             android:gravity="center_vertical"
             android:background="@drawable/name"
             android:layout_height="wrap_content"
@@ -31,30 +32,21 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:text="@{model.number}"
+            android:imeOptions="flagNoExtractUi"
             android:layout_marginBottom="7dp"
             android:hint="Enter Number" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/msgt"
-            android:background="@drawable/name"
-            android:layout_below="@id/num">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:text="Message"
                 android:paddingStart="15dp"
-                android:gravity="center"
-                android:layout_height="match_parent" />
-
-            <Button
-                android:id="@+id/send"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:text="send" />
-        </RelativeLayout>
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:background="@drawable/name"
+                android:layout_below="@+id/num"
+                android:id="@+id/msgt"
+                android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/msg"
@@ -62,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:gravity="top|start"
+            android:imeOptions="flagNoExtractUi"
             android:text="@{model.msg}"
             android:hint="Enter Message" />
 
@@ -79,6 +72,7 @@
                 android:gravity="center"
                 android:layout_centerHorizontal="true"
                 android:padding="17dp"
+                android:layout_below="@+id/datebutton"
                 android:id="@+id/datetext" />
 
             <Button
@@ -86,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/datebutton"
                 android:text="Pick-Date"
-                android:layout_below="@id/datetext" />
+                />
         </RelativeLayout>
 
         <RelativeLayout
@@ -97,13 +91,14 @@
             android:layout_below="@+id/msg">
 
             <TextView
-                android:layout_alignParentEnd="true"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00"
                 android:layout_centerHorizontal="true"
                 android:layout_marginEnd="14dp"
                 android:padding="17dp"
+                android:layout_below="@+id/timebutton"
                 android:id="@+id/timetext" />
 
             <Button
@@ -111,8 +106,14 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/timebutton"
                 android:text="Pick-Time"
+                android:layout_centerHorizontal="true"
+               />
+            <Button
+                android:id="@+id/send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/timetext" />
+                android:text="send" />
         </RelativeLayout>
 
     </RelativeLayout>

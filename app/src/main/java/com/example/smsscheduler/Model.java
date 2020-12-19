@@ -1,10 +1,47 @@
 package com.example.smsscheduler;
 
-public class Model {
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "content_table")
+public class Model {
+    @ColumnInfo(name = "number")
     String number;
+    @ColumnInfo(name = "content")
     String msg;
+    @ColumnInfo(name = "time string")
+    String timestring;
+    @ColumnInfo(name = "time")
     long  time;
+    @ColumnInfo(name = "status")
+    String status;
+    @PrimaryKey(autoGenerate = false)
+    public int key;
+
+    public String getTimestring() {
+        return timestring;
+    }
+
+    public void setTimestring(String timestring) {
+        this.timestring = timestring;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getKey() {
+        return key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
+    }
 
     public Model() {
     }
